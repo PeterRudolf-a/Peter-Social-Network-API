@@ -56,12 +56,24 @@ const ThoughtSchema = new Schema<IThought>(
   {
     toJSON: {
       virtuals: true,
+      getters: true,
     },
     timestamps: true,
   },
 );
+
+//getter method to format the Thought createdAt timestamp on query
+ThoughtSchema.virtual("createdAt").get(function () {
+  return this.createdAt.toISOString();
+});
+
 ThoughtSchema.virtual("reactionCount").get(function () {
   return this.reactions.length;
+});
+
+//getter method to format the Reaction createdAt timestamp on query
+reactionSchema.virtual("createdAt").get(function () {
+  return this.createdAt.toISOString();
 });
 
 const Thought = model<IThought>("Thought", ThoughtSchema);

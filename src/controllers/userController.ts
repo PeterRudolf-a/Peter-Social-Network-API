@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
-import { ObjectId } from "mongodb";
-import { User, Thought } from "../models/index";
+import { User } from "../models/index";
 
-export const getAllUsers = async (req: Request, res: Response) => {
+export const getAllUsers = async (_req: Request, res: Response) => {
   try {
     const users = await User.find();
     res.json(users);

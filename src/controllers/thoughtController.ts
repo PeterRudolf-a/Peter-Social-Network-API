@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { Thought } from "../models/index";
 
-export const getAllThoughts = async (req: Request, res: Response) => {
+export const getAllThoughts = async (_req: Request, res: Response) => {
   try {
     const thoughts = await Thought.find();
     res.json(thoughts);
