@@ -1,58 +1,57 @@
-import { Schema, VirtualType, model, type Document } from 'mongoose'; // import types
+import { Schema, model, type Document } from 'mongoose'; // import types
 
 // create user schema
 interface IUser extends Document {
-    username: string,
-    email: string,
-    thoughts: Schema.Types.ObjectId[],
-    friends: Schema.Types.ObjectId[],
-    friendCount: VirtualType<number>
+    username: string, // username is required and must be a string
+    email: string, // email is required and must be a string
+    thoughts: Schema.Types.ObjectId[], // thoughts is an array of _id values referencing the Thought model
+    friends: Schema.Types.ObjectId[], // friends is an array of _id values referencing the User model (self-reference)
 }
 
 // create user model
 const userSchema = new Schema<IUser>(
     {
         username: {
-            type: String,
-            required: true,
-            unique: true,
-            trim: true,
+            type: String, // username is a string
+            required: true, // username is required
+            unique: true, // username is unique
+            trim: true, // removes whitespace from the beginning and end of a string
         },
         email: {
-            type: String,
-            required: true,
-            unique: true,
-            match: [/.+@.+\..+/, 'Must match an email address!'],
+            type: String, // email is a string
+            required: true, // email is required
+            unique: true, // email is unique
+            match: [/.+@.+\..+/, 'Must match an email address!'], // must match an email address
         },
-        thoughts: {
+        thoughts: { // thoughts is an array of _id values referencing the Thought model
             type: [
                 {
-                    type: Schema.Types.ObjectId,
-                    ref: 'Thought',
+                    type: Schema.Types.ObjectId, // _id values are stored in an array
+                    ref: 'Thought', // the ref property establishes the relationship between the data in the thoughts array and the Thought model
                 },
             ],
             default: [],
         },
-        friends: [
+        friends: [ // friends is an array of _id values referencing the User model (self-reference)
             {
-                type: Schema.Types.ObjectId,
-                ref: 'User',
+                type: Schema.Types.ObjectId, // _id values are stored in an array
+                ref: 'User', // the ref property establishes the relationship between the data in the friends array and the User model
             },
         ],
     },
     {
         toJSON: {
-            virtuals: true,
+            virtuals: true, // include virtual properties when data is requested
         },
-        timestamps: true
+        timestamps: true // include timestamps (createdAt and updatedAt)
     },
 );
 
 // get total count of friends on retrieval
 userSchema.virtual('friendCount').get(function () {
-    return this.friends.length;
+    return this.friends.length; // return the length of the user's friends array field on query
 });
 
-const User = model<IUser>('User', userSchema);
+const User = model<IUser>('User', userSchema); // create the User model using the userSchema
 
-export default User;
+export default User; // export the User model

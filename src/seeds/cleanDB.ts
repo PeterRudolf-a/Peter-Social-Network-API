@@ -1,16 +1,13 @@
-import { User, Thought } from '../models/index.js';
+import { User, Thought, Reaction } from '../models/index.js';
 
 const cleanDB = async (): Promise<void> => {
   try {
     await User.deleteMany({});
-    console.log('Course collection cleaned.');
-
     await Thought.deleteMany({});
-    console.log('Student collection cleaned.');
-
+    await Reaction.deleteMany({});
+    console.log('Database cleaned.');
   } catch (err) {
-    console.error('Error cleaning collections:', err);
-    process.exit(1);
+    console.error('Error cleaning database:', err);
   }
 };
 

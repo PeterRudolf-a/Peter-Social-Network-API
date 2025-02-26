@@ -1,81 +1,85 @@
-import { Schema, model, type Document, Types } from "mongoose";
+import { Schema, model, type Document, Types } from "mongoose"; // Importing Schema, model, and Types from mongoose
 
+// Creating an interface for the Thought document
 interface IThought extends Document {
-  thoughtText: string;
-  createdAt: Date;
-  username: string;
-  reactions: Schema.Types.ObjectId[];
+  thoughtText: string; // thoughtText is a string
+  createdAt: Date; // createdAt is a Date
+  username: string; // username is a string
+  reactions: Types.DocumentArray<typeof reactionSchema>; // reactions is an array of reactionSchema
 }
 
+// Creating a schema for the Reaction document
 const reactionSchema = new Schema(
   {
     reactionId: {
-      type: Schema.Types.ObjectId,
-      default: () => new Types.ObjectId(),
+      type: Schema.Types.ObjectId, // reactionId is a Schema.Types.ObjectId
+      default: () => new Types.ObjectId(), // default value is a new ObjectId
     },
     reactionBody: {
-      type: String,
-      required: true,
-      maxlength: 280,
+      type: String, // reactionBody is a string
+      required: true, // required field
+      maxlength: 280, // max length of 280 characters
     },
     username: {
-      type: String,
-      required: true,
+      type: String, // username is a string
+      required: true, // required field
     },
     createdAt: {
-      type: Date,
-      default: Date.now,
+      type: Date, // createdAt is a Date
+      default: Date.now, // default value is the current date
     },
   },
   {
     toJSON: {
-      getters: true,
+      getters: true, // getters are enabled
     },
-    id: false,
   },
 );
 
+// Getter method to format the Reaction createdAt timestamp on query
+reactionSchema.virtual("formattedCreatedAt").get(function () {
+  return this.createdAt.toISOString(); // Returning the createdAt timestamp in ISO format
+});
+
+// Creating a schema for the Thought document
 const ThoughtSchema = new Schema<IThought>(
   {
     thoughtText: {
-      type: String,
-      required: true,
-      minlength: 1,
-      maxlength: 280,
+      type: String, // thoughtText is a string
+      required: true, // required field
+      minlength: 1, // min length of 1 character
+      maxlength: 280, // max length of 280 characters
     },
     createdAt: {
-      type: Date,
-      default: Date.now,
+      type: Date, // createdAt is a Date
+      default: Date.now, // default
     },
     username: {
-      type: String,
-      required: true,
+      type: String, // username is a string
+      required: true, // required field
     },
-    reactions: [reactionSchema],
+    reactions: [reactionSchema], // reactions is an array of reactionSchema
   },
   {
     toJSON: {
-      virtuals: true,
-      getters: true,
+      virtuals: true, // virtuals are enabled
+      getters: true, // getters are enabled
     },
-    timestamps: true,
+    timestamps: true, // timestamps are enabled
   },
 );
 
-//getter method to format the Thought createdAt timestamp on query
-ThoughtSchema.virtual("createdAt").get(function () {
-  return this.createdAt.toISOString();
+// Getter method to format the Thought createdAt timestamp on query
+ThoughtSchema.virtual("formattedCreatedAt").get(function () {
+  return this.createdAt.toISOString(); // Returning the createdAt timestamp in ISO format
 });
 
+// Virtual to get the length of the reactions array
 ThoughtSchema.virtual("reactionCount").get(function () {
-  return this.reactions.length;
+  return this.reactions.length; // Returning the length of the reactions array
 });
 
-//getter method to format the Reaction createdAt timestamp on query
-reactionSchema.virtual("createdAt").get(function () {
-  return this.createdAt.toISOString();
-});
+const Reaction = model("Reaction", reactionSchema); // Creating the Reaction model
+const Thought = model<IThought>("Thought", ThoughtSchema); // Creating the Thought model
 
-const Thought = model<IThought>("Thought", ThoughtSchema);
-
-export default Thought;
+export { Thought, Reaction }; // Exporting the Thought and Reaction models
