@@ -38,7 +38,7 @@ export const createThought = async (req, res) => {
         { new: true } // Validate input and return new user
         );
         if (!user) {
-            return res.status(404).json({ message: "No user found with this username!" }); // Check if user exists
+            return res.status(404).json({ message: "Thought created, but no user found" }); // Check if user exists
         }
         return res.json(thought);
     }
@@ -93,7 +93,7 @@ export const addReaction = async (req, res) => {
         { new: true } // Validate input and return new thought
         );
         if (!thought) {
-            res.status(404).json({ message: "No thought found with this id!" }); // Check if thought exists
+            res.status(404).json({ message: "Reaction created, but no thought found with this id" }); // Check if thought exists
             return;
         }
         res.json(thought);
