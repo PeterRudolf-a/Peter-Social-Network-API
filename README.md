@@ -23,7 +23,7 @@ Use the routes in a tool like Insomnia or Postman to test and use the database.
 
 
 ## Video Walkthrough
-
+https://app.screencastify.com/v3/watch/eucqFEOj3t8zvqU2jiHo 
 
 ## Questions
 
