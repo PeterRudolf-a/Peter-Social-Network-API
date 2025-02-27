@@ -1,5 +1,6 @@
 import { Request, Response } from "express"; // Import types from Express library
 import { Thought, Reaction } from "../models/index.js"; // Import Thought and Reaction models
+import { User } from "../models/index.js"; // Import User model
 
 // Get all thoughts
 export const getAllThoughts = async (_req: Request, res: Response) => {
@@ -28,13 +29,22 @@ export const getThoughtById = async (req: Request, res: Response) => {
   }
 };
 
-// create new thought
+// create new thought for a user where the user is identified by the username in the request body,
+// and the created thought id is added to the user's thoughts array field
 export const createThought = async (req: Request, res: Response) => {
   try {
     const thought = await Thought.create(req.body); // Create new thought
-    res.json(thought);
+    const user = await User.findOneAndUpdate( // Find user by username and update
+      { username: req.body.username }, // Destructure username from request body
+      { $push: { thoughts: thought._id } }, // Push new thought to thoughts array
+      { new: true } // Validate input and return new user
+    );
+    if (!user) {
+      return res.status(404).json({ message: "No user found with this username!" }); // Check if user exists
+    }
+    return res.json(thought);
   } catch (err) {
-    res.status(500).json(err);
+    return res.status(500).json(err);
   }
 };
 
@@ -56,7 +66,7 @@ export const updateThought = async (req: Request, res: Response) => {
   }
 };
 
-// Delete thought by ID
+// Delete thought by ID and remove it from the associated user's thoughts array field
 export const deleteThought = async (req: Request, res: Response) => {
   try {
     const { id } = req.params; // Destructure id from request parameters
@@ -64,6 +74,11 @@ export const deleteThought = async (req: Request, res: Response) => {
     if (!thought) {
       return res.status(404).json({ message: "No thought found with this id!" }); // Check if thought exists
     }
+    await User.findOneAndUpdate( // Find user by username and update
+      { username: thought.username }, // Destructure username from thought
+      { $pull: { thoughts: thought._id } }, // Pull thought from thoughts array
+      { new: true } // Validate input and return new user
+    );
     return res.json(thought);
   } catch (err) {
     return res.status(500).json(err);
