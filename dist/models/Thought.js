@@ -22,6 +22,7 @@ const reactionSchema = new Schema({
     toJSON: {
         getters: true, // getters are enabled
     },
+    id: false, // id is disabled (use _id instead)
 });
 // Getter method to format the Reaction createdAt timestamp on query
 reactionSchema.virtual("formattedCreatedAt").get(function () {
@@ -50,6 +51,7 @@ const ThoughtSchema = new Schema({
         getters: true, // getters are enabled
     },
     timestamps: true, // timestamps are enabled
+    id: false, // id is disabled (use _id instead)
 });
 // Getter method to format the Thought createdAt timestamp on query
 ThoughtSchema.virtual("formattedCreatedAt").get(function () {

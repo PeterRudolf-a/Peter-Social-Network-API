@@ -43,7 +43,8 @@ const userSchema = new Schema<IUser>(
         toJSON: {
             virtuals: true, // include virtual properties when data is requested
         },
-        timestamps: true // include timestamps (createdAt and updatedAt)
+        timestamps: true, // include timestamps (createdAt and updatedAt)
+        id: false // disable the default virtual id property use _id instead
     },
 );
 

@@ -33,6 +33,7 @@ const reactionSchema = new Schema(
     toJSON: {
       getters: true, // getters are enabled
     },
+    id: false, // id is disabled (use _id instead)
   },
 );
 
@@ -66,6 +67,7 @@ const ThoughtSchema = new Schema<IThought>(
       getters: true, // getters are enabled
     },
     timestamps: true, // timestamps are enabled
+    id: false, // id is disabled (use _id instead)
   },
 );
 

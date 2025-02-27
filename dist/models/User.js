@@ -32,7 +32,8 @@ const userSchema = new Schema({
     toJSON: {
         virtuals: true, // include virtual properties when data is requested
     },
-    timestamps: true // include timestamps (createdAt and updatedAt)
+    timestamps: true, // include timestamps (createdAt and updatedAt)
+    id: false // disable the default virtual id property use _id instead
 });
 // get total count of friends on retrieval
 userSchema.virtual('friendCount').get(function () {
